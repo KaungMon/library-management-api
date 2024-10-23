@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('address');
             $table->string('phone');
             $table->string('gender');
-            $table->integer('user_role_id');
+            $table->foreignId('user_role_id')
+                ->references('user_role')
+                ->on('id');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
