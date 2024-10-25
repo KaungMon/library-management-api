@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// SECTION - category
+Route::group(['prefix' => 'category'], function () {
+    Route::post('create', [CategoryController::class, 'create']);
+    Route::get('lists', [CategoryController::class, 'lists']);
+    Route::post('update', [CategoryController::class, 'update']);
+});
+// !SECTION
