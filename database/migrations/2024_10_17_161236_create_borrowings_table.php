@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')
-                ->references('book')
+                ->references('books')
                 ->on('id');
             $table->integer('librarian_id')
-                ->references('user')
+                ->references('users')
                 ->on('id');
             $table->foreignId('member_id')
-                ->references('user')
+                ->references('users')
                 ->on('id');
             $table->date('borrow_date');
             $table->date('return_date');
