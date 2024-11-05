@@ -14,14 +14,11 @@ return new class extends Migration
         Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')
-                ->references('books')
-                ->on('id');
-            $table->integer('librarian_id')
-                ->references('users')
-                ->on('id');
+                ->constrained('books');
+            $table->foreignId('librian_id')
+                ->constrained('users');
             $table->foreignId('member_id')
-                ->references('users')
-                ->on('id');
+                ->constrained('users');
             $table->date('borrow_date');
             $table->date('return_date');
             $table->string('status');

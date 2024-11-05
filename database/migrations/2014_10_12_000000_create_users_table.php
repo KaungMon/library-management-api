@@ -20,8 +20,7 @@ return new class extends Migration
             $table->string('address');
             $table->integer('phone');
             $table->string('gender');
-            $table->foreignId('user_role_id')
-                ->constrained('user_roles');
+            $table->foreignId('user_role_id')->constrained('user_roles');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

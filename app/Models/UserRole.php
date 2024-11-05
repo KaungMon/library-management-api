@@ -10,6 +10,6 @@ class UserRole extends Model
     use HasFactory;
 
     protected $fillable = [
-        'role_name',
+        'role_name'
     ];
 }

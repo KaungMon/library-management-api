@@ -16,11 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->string('publisher');
-            $table->integer('published_year');
-            $table->foreignId('author_id')
-                ->references('authors')
-                ->on('id')
-                ->onDelete('cascade');
+            $table->year('published_year');
+            $table->foreignId('author_id')->constrained('authors');
             $table->timestamps();
         });
     }
