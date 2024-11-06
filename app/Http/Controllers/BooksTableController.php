@@ -11,6 +11,7 @@ class BooksTableController extends Controller
     // SECTION - create book
     public function create(Request $request)
     {
+
         $data = $this->getData($request);
         $this->validationCheck($request);
         if ($request->hasFile('image')) {
@@ -18,7 +19,47 @@ class BooksTableController extends Controller
             $data['image'] = $newImageName;
             $request->image->storeAs('public/image/' . $newImageName);
         }
-        return response()->json(['message' => 'success'], 200);
+        $book = Book::create($data);
+        $bookId = $book->id;
+        return response()->json([
+            'id' => $bookId
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - lists
+    public function lists()
+    {
+        $books = Book::with(['author', 'categories'])->get();
+
+        $result = $books->map(function ($book) {
+            return [
+                'id' => $book->id,
+                'title' => $book->title,
+                'image' => $book->image,
+                'publisher' => $book->publisher,
+                'published_year' => $book->published_year,
+                'author_name' => $book->author['author_name'],
+                'categories' => $book->categories->pluck('category_name')
+            ];
+        });
+        return response()->json([
+            'books' => $result
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - update
+    public function update(Request $request)
+    {
+        $id = $request->id;
+        $data = [
+            'title' => $request->title,
+            'publisher' => $request->publisher,
+            'published_year' => $request->published_year
+        ];
+
+        Book::where('id', $id)->update($data);
     }
     // !SECTION
 
@@ -42,7 +83,7 @@ class BooksTableController extends Controller
             "publisher" => "required",
             "published_year" => "required",
             "author_id" => "required",
-            // "image" => "image"
+            "image" => "nullable"
         ];
 
         Validator::make($request->all(), $validationRules)->validate();

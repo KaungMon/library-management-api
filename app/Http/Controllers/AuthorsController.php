@@ -22,7 +22,7 @@ class AuthorsController extends Controller
     // SECTION - author lists
     public function lists()
     {
-        $authors = Author::get();
+        $authors = Author::withCount('books')->get();
         return response()->json([
             'authors' => $authors
         ], 200);

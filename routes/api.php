@@ -2,11 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use PharIo\Manifest\AuthorCollection;
 use App\Http\Controllers\AuthorsController;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BooksTableController;
+use App\Models\BookCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +42,14 @@ Route::group(['prefix' => 'author'], function () {
 // SECTION - books
 Route::group(['prefix' => 'books'], function () {
     Route::post('create', [BooksTableController::class, 'create']);
+    Route::get('lists', [BooksTableController::class, 'lists']);
+    Route::post('update', [BooksTableController::class, 'update']);
 });
+// !SECTION
 
-Route::group(['prefix' => 'bookcategories'], function () {
+// SECTION - book categories
+Route::group(['prefix' => 'book_categories'], function () {
     Route::post('create', [BookCategoryController::class, 'create']);
+    Route::get('lists', [BookCategoryController::class, 'lists']);
 });
 // !SECTION

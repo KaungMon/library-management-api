@@ -22,7 +22,7 @@ class CategoryController extends Controller
     // SECTION - category lists
     public function lists()
     {
-        $categories = Category::get();
+        $categories = Category::withCount('books')->get();
         return response()->json([
             'categories' => $categories
         ], 200);
