@@ -30,9 +30,10 @@ class BooksTableController extends Controller
     // SECTION - lists
     public function lists()
     {
-        $books = Book::with(['author', 'categories'])->get();
 
-        $result = $books->map(function ($book) {
+        $books = Book::with(['author', 'categories'])->paginate(request('rows'));
+
+        $result = $books->getCollection()->map(function ($book) {
             return [
                 'id' => $book->id,
                 'title' => $book->title,
@@ -43,8 +44,11 @@ class BooksTableController extends Controller
                 'categories' => $book->categories->pluck('category_name')
             ];
         });
+
+        $books->setCollection($result);
+
         return response()->json([
-            'books' => $result
+            'books' => $books
         ], 200);
     }
     // !SECTION
