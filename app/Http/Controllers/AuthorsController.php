@@ -22,7 +22,9 @@ class AuthorsController extends Controller
     // SECTION - author lists
     public function lists()
     {
-        $authors = Author::withCount('books')->get();
+        $authors = Author::withCount('books')->when(request('key'), function ($querry) {
+            $querry->where('author_name', 'like', '%' . request('key') . '%');
+        })->get();
         return response()->json([
             'authors' => $authors
         ], 200);

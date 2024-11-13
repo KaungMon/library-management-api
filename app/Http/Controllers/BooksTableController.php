@@ -6,12 +6,13 @@ use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPSTORM_META\type;
+
 class BooksTableController extends Controller
 {
     // SECTION - create book
     public function create(Request $request)
     {
-
         $data = $this->getData($request);
         $this->validationCheck($request);
         if ($request->hasFile('image')) {
@@ -21,6 +22,7 @@ class BooksTableController extends Controller
         }
         $book = Book::create($data);
         $bookId = $book->id;
+
         return response()->json([
             'id' => $bookId
         ], 200);
@@ -31,7 +33,11 @@ class BooksTableController extends Controller
     public function lists()
     {
 
-        $books = Book::with(['author', 'categories'])->paginate(request('rows'));
+        $books = Book::with(['author', 'categories'])->when(request('key'), function ($query) {
+            $query->orWhere('title', 'like', '%' . request('key') . '%')
+                ->orWhere('publisher', 'like', '%' . request('key') . '%')
+                ->orWhere('published_year', 'like', '%' . request('key') . '%');
+        })->paginate(request('rows'));
 
         $result = $books->getCollection()->map(function ($book) {
             return [
@@ -40,7 +46,7 @@ class BooksTableController extends Controller
                 'image' => $book->image,
                 'publisher' => $book->publisher,
                 'published_year' => $book->published_year,
-                'author_name' => $book->author['author_name'],
+                'author' => $book->author,
                 'categories' => $book->categories->pluck('category_name')
             ];
         });
@@ -60,7 +66,8 @@ class BooksTableController extends Controller
         $data = [
             'title' => $request->title,
             'publisher' => $request->publisher,
-            'published_year' => $request->published_year
+            'published_year' => $request->published_year,
+            'author_id' => $request->author_id,
         ];
 
         Book::where('id', $id)->update($data);
@@ -83,14 +90,20 @@ class BooksTableController extends Controller
     private function validationCheck($request)
     {
         $validationRules = [
-            "title" => "required",
+            "title" => ["required"],
             "publisher" => "required",
-            "published_year" => "required",
+            "published_year" => "required|integer",
             "author_id" => "required",
-            "image" => "nullable"
+            "image" => "nullable",
+            "has_genres" => "accepted"
         ];
 
-        Validator::make($request->all(), $validationRules)->validate();
+        $validationMessages = [
+            "published_year.integer" => "The published year field is required.",
+            "has_genres.accepted" => "The genres field is required."
+        ];
+
+        Validator::make($request->all(), $validationRules, $validationMessages)->validate();
     }
     // !SECTION
 }

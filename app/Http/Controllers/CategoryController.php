@@ -22,7 +22,9 @@ class CategoryController extends Controller
     // SECTION - category lists
     public function lists()
     {
-        $categories = Category::withCount('books')->get();
+        $categories = Category::withCount('books')->when(request('key'), function ($query) {
+            $query->where('category_name', 'like', '%' . request('key') . '%');
+        })->get();
         return response()->json([
             'categories' => $categories
         ], 200);
