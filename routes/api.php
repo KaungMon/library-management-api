@@ -28,6 +28,7 @@ Route::group(['prefix' => 'category'], function () {
     Route::post('create', [CategoryController::class, 'create']);
     Route::get('lists', [CategoryController::class, 'lists']);
     Route::post('update', [CategoryController::class, 'update']);
+    ROute::get('delete/{id}', [CategoryController::class, 'delete']);
 });
 // !SECTION
 
@@ -36,6 +37,7 @@ Route::group(['prefix' => 'author'], function () {
     Route::post('create', [AuthorsController::class, 'create']);
     Route::get('lists', [AuthorsController::class, 'lists']);
     Route::post('update', [AuthorsController::class, 'update']);
+    Route::get('delete/{id}', [AuthorsController::class, 'delete']);
 });
 // !SECTION
 
@@ -44,6 +46,7 @@ Route::group(['prefix' => 'books'], function () {
     Route::post('create', [BooksTableController::class, 'create']);
     Route::get('lists', [BooksTableController::class, 'lists']);
     Route::post('update', [BooksTableController::class, 'update']);
+    Route::get('delete/{id}', [BooksTableController::class, 'delete']);
 });
 // !SECTION
 

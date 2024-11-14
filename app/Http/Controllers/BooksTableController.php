@@ -74,6 +74,16 @@ class BooksTableController extends Controller
     }
     // !SECTION
 
+    // SECTION - book delete
+    public function delete($id)
+    {
+        Book::where('id', $id)->delete();
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
+    // !SECTION
+
     // SECTION - get data
     private function getData($request)
     {

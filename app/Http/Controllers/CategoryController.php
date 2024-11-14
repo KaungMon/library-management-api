@@ -43,6 +43,17 @@ class CategoryController extends Controller
     }
     // !SECTION
 
+    // SECTION - category delete
+    public function delete($id)
+    {
+        logger($id);
+        Category::where('id', $id)->delete();
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
+    // !SECTION
+
     // SECTION - get data
     private function getData($request)
     {

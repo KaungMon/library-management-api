@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('book_categories', function (Blueprint $table) {
             $table->foreignId('category_id')
-                ->constrained('categories');
+                ->constrained('categories')
+                ->onDelete('cascade');
             $table->foreignId('book_id')
                 ->constrained('books')
                 ->onDelete('cascade');
