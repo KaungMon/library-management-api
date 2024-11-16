@@ -42,6 +42,22 @@ class BookCategoryController extends Controller
     }
     // !SECTION
 
+    // SECTION - update
+    public function update(Request $request)
+    {
+        logger($request);
+        $bookId = $request->book_id;
+        BookCategory::where('book_id', $bookId)->delete();
+        foreach ($request->categories as $category) {
+            $data = [
+                'category_id' => $category['value'],
+                'book_id' => $request->book_id
+            ];
+            BookCategory::create($data);
+        }
+    }
+    // !SECTION
+
     // SECTION - validation check
     private function validationCheck($request)
     {

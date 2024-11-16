@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-use function PHPSTORM_META\type;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class BooksTableController extends Controller
 {
@@ -62,15 +62,31 @@ class BooksTableController extends Controller
     // SECTION - update
     public function update(Request $request)
     {
+        $data = $this->getData($request);
+        $this->validationCheck($request);
         $id = $request->id;
-        $data = [
-            'title' => $request->title,
-            'publisher' => $request->publisher,
-            'published_year' => $request->published_year,
-            'author_id' => $request->author_id,
-        ];
-
+        if ($request->hasFile('image')) {
+            $oldImageName = Book::where('id', $id)->first()->image;
+            if ($oldImageName != null) {
+                Storage::delete('public/image/' . $oldImageName);
+            }
+            $newImageName = uniqid() . $request->file('image')->getClientOriginalName();
+            $request->file('image')->storeAs('public/image/' . $newImageName);
+            $data['image'] = $newImageName;
+        }
+        logger($data);
         Book::where('id', $id)->update($data);
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - book detail
+    public function detail($id)
+    {
+        $book = Book::with(['categories', 'author'])->where('id', $id)->first();
+        return response()->json(['book' => $book], 200);
     }
     // !SECTION
 
