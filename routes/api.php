@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthorsController;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BooksTableController;
+use App\Http\Controllers\UserController;
 use App\Models\BookCategory;
 
 /*
@@ -22,6 +23,12 @@ use App\Models\BookCategory;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// SECTION - user
+Route::group(['prefix' => 'user'], function () {
+    Route::post('create', [UserController::class, 'create']);
+});
+// !SECTION
 
 // SECTION - category
 Route::group(['prefix' => 'category'], function () {
