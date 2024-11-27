@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class Status extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'role_name'
+        'status_name'
     ];
 
-    public function users() {
-        return $this->hasMany(User::class);
+    public function borrowings() {
+        return $this->hasMany(Borrowing::class);
     }
 }

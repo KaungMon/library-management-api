@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('book_id')
                 ->constrained('books');
-            $table->foreignId('librian_id')
-                ->constrained('users');
-            $table->foreignId('member_id')
-                ->constrained('users');
+            $table->foreignId('librarian_id')->constrained('users');
+            $table->foreignId('member_id')->constrained('users');
             $table->date('borrow_date');
             $table->date('return_date');
-            $table->string('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }

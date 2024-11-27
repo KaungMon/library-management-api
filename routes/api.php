@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthorsController;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BooksTableController;
+use App\Http\Controllers\BorrowingsController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\StatusController;
 use App\Models\BookCategory;
 
 /*
@@ -58,3 +61,23 @@ Route::group(['prefix' => 'book_categories'], function () {
     Route::post('update', [BookCategoryController::class, 'update']);
 });
 // !SECTION
+
+// SECTION - borrow book
+Route::group(['prefix' => 'borrow_book'], function () {
+    Route::get('book_lists', [BorrowingsController::class, 'book_lists']);
+    Route::post('create', [BorrowingsController::class, 'create']);
+    Route::get('lists', [BorrowingsController::class, 'lists']);
+    Route::post('update', [BorrowingsController::class, 'update']);
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('librarians', [BorrowingsController::class, 'librarians']);
+        Route::get('members', [BorrowingsController::class, 'members']);
+    });
+});
+// !SECTION
+
+// SECTION - statuses
+Route::group(['prefix' => 'status'], function () {
+    Route::get('lists', [StatusController::class, 'lists']);
+});
+// !SECTION
+
