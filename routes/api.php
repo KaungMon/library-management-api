@@ -1,15 +1,17 @@
 <?php
 
+use App\Models\BookCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AuthorsController;
-use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BooksTableController;
 use App\Http\Controllers\BorrowingsController;
+use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\StatusController;
-use App\Models\BookCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,3 +83,10 @@ Route::group(['prefix' => 'status'], function () {
 });
 // !SECTION
 
+// SECTION - notification
+Route::group(['prefix' => 'notification'], function () {
+    Route::get('index', [NotificationController::class, 'index']);
+});
+// !SECTION
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
