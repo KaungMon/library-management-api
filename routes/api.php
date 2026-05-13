@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\BookCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\StatusController;
@@ -12,6 +10,7 @@ use App\Http\Controllers\BooksTableController;
 use App\Http\Controllers\BorrowingsController;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,12 +27,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// SECTION - auth
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [UserController::class, 'login']);
+});
+// !SECTION
+
 // SECTION - category
 Route::group(['prefix' => 'category'], function () {
     Route::post('create', [CategoryController::class, 'create']);
     Route::get('lists', [CategoryController::class, 'lists']);
     Route::post('update', [CategoryController::class, 'update']);
-    ROute::get('delete/{id}', [CategoryController::class, 'delete']);
+    Route::get('delete/{id}', [CategoryController::class, 'delete']);
 });
 // !SECTION
 
@@ -86,6 +91,7 @@ Route::group(['prefix' => 'status'], function () {
 // SECTION - notification
 Route::group(['prefix' => 'notification'], function () {
     Route::get('index', [NotificationController::class, 'index']);
+    Route::get('delete', [NotificationController::class, 'delete']);
 });
 // !SECTION
 

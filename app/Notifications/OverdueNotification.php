@@ -3,12 +3,14 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class OverdueNotification extends Notification implements ShouldBroadcast
+class OverdueNotification extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
 
@@ -47,10 +49,25 @@ class OverdueNotification extends Notification implements ShouldBroadcast
         ];
     }
 
-    public function toBroadCast(object $notifiable): BroadcastMessage
+    /* public function toBroadCast(object $notifiable): BroadcastMessage
     {
-        return new BroadcastMessage([
+        $broadcastData = [
             'message' => 'Hello, this is a notification!'
-        ]);
+        ];
+
+        // Log the broadcast message data
+        Log::info('Broadcasting Message:', ['data' => $broadcastData]);
+
+        return new BroadcastMessage($broadcastData);
+    } */
+
+    public function broadcastAs()
+    {
+        return 'OverdueNotification';
+    }
+
+    public function broadcastOn()
+    {
+        return new Channel('public-channel');
     }
 }

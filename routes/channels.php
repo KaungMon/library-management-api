@@ -17,6 +17,3 @@ use Illuminate\Support\Facades\Broadcast;
     return (int) $user->id === (int) $id;
 }); */
 
-Broadcast::channel('public-channel', function () {
-    return true;
-});

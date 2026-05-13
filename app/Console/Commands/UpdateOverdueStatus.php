@@ -32,7 +32,8 @@ class UpdateOverdueStatus extends Command
     {
         $today = Carbon::today()->setTimezone('Asia/Yangon')->format('Y-m-d');
         $overdueLogs = Borrowing::with(['member', 'book'])->where('return_date', '<', $today)
-        ->where('status_id', '<>', 2)->get();
+        ->where('status_id','<>', 2)->get();
+        logger($overdueLogs);
         foreach($overdueLogs as $log) {
 
             $log->status_id = 3;
