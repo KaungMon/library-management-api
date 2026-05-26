@@ -26,7 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // SECTION - user
 Route::group(['prefix' => 'user'], function () {
-    Route::post('create', [UserController::class, 'create']);
+    Route::post('login', [UserController::class, 'login']);
+    Route::post('signup', [UserController::class, 'signup']);
 });
 // !SECTION
 
