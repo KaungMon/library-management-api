@@ -22,7 +22,9 @@ class CategoryController extends Controller
     // SECTION - category lists
     public function lists()
     {
-        $categories = Category::get();
+        $categories = Category::withCount('books')->when(request('key'), function ($query) {
+            $query->where('category_name', 'like', '%' . request('key') . '%');
+        })->get();
         return response()->json([
             'categories' => $categories
         ], 200);
@@ -35,6 +37,17 @@ class CategoryController extends Controller
         $data = $this->getData($request);
         $id = $request->categoryId;
         Category::where('id', $id)->update($data);
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - category delete
+    public function delete($id)
+    {
+        logger($id);
+        Category::where('id', $id)->delete();
         return response()->json([
             'message' => 'success'
         ], 200);

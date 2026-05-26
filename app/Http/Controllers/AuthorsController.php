@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Author;
 use Illuminate\Http\Request;
 
@@ -22,9 +23,23 @@ class AuthorsController extends Controller
     // SECTION - author lists
     public function lists()
     {
-        $authors = Author::get();
+        $authors = Author::withCount('books')->when(request('key'), function ($querry) {
+            $querry->where('author_name', 'like', '%' . request('key') . '%');
+        })->get();
         return response()->json([
             'authors' => $authors
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - delete author
+    public function delete($id)
+    {
+        logger($id);
+        Author::where('id', $id)->delete();
+        // Book::where('author_id', $id)->delete();
+        return response()->json([
+            "message" => "success"
         ], 200);
     }
     // !SECTION
