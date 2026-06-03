@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\StatusController;
@@ -11,11 +11,12 @@ use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 
-use Illuminate\Http\Request;
+/* Route::middleware('auth:sanctum')->prefix('user')->group(function() {
+    Route::post('logout', [UserController::class, 'logout']);
+}); */
 
-Route::middleware('auth:sanctum')->prefix('user')->group(function () {
-    Route::get('info', [UserController::class, 'info']);
-    Route::get('logout', [UserController::class, 'logout']);
+Route::prefix('user')->group(function() {
+    Route::post('logout', [UserController::class, 'logout']);
 });
 
 // SECTION - user

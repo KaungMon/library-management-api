@@ -51,6 +51,23 @@ class UserController extends Controller
     }
     // !SECTION
 
+    // SECTION - logout
+    public function logout(Request $request)
+    {
+        logger('--- Debugging Incoming Logout Request ---');
+        logger('Full URL: ' . $request->fullUrl());
+        logger('Request Method: ' . $request->method());
+
+        // 1. Log all incoming headers (This checks for X-XSRF-TOKEN)
+        logger('Headers:', $request->headers->all());
+
+        // 2. Log all incoming cookies (This checks for laravel_session)
+        logger('Cookies:', $request->cookies->all());
+
+        return response()->json(['message' => 'Log captured']);
+    }
+    // !SECTION
+
     // SECTION - get data
     private function getData($request)
     {
@@ -65,4 +82,5 @@ class UserController extends Controller
             "password" => Hash::make($request->password),
         ];
     }
+    // !SECTION
 }
