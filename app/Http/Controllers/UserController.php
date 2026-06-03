@@ -4,32 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     // SECTION - create
-    public function login(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-        if(isset($user)) {
-            if(Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'user' => $user,
-                    'token' => $user->createToken(time())->plainTextToken
-                ], 200);
-            }else {
-                return response()->json([
-                    'user' => null,
-                    'token' => null
-                ], 200);
-            }
-        }else {
+    public function login(Request $request) {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+        if(Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
             return response()->json([
-                'user' => null,
-                'token' => null
-            ], 200);
+                'message' => 'Login successful!!!'
+            ], 202);
         }
+
+        return response()->json([
+            'message' => 'Invalid credentials',
+        ], 401);
     }
     // !SECTION
 
