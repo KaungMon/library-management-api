@@ -15,16 +15,18 @@ class UserController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+
         if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
             return response()->json([
-                'message' => 'Login successful!!!'
+                "message" => "Login successfully",
+                "user" => Auth::user(),
+
             ], 202);
         }
 
         return response()->json([
-            'message' => 'Invalid credentials',
+            "message" => "Invalid email or password."
         ], 401);
     }
     // !SECTION
