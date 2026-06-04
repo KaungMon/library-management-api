@@ -11,15 +11,13 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     // SECTION - create
-    public function login(Request $request)
-    {
-
+    public function login(Request $request) {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->remember_me)) {
+        if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return response()->json([
                 "message" => "Login successfully",
@@ -54,19 +52,21 @@ class UserController extends Controller
     // SECTION - logout
     public function logout(Request $request)
     {
-        logger('--- Debugging Incoming Logout Request ---');
-        logger('Full URL: ' . $request->fullUrl());
-        logger('Request Method: ' . $request->method());
+        Auth::guard('web')->logout();
 
-        // 1. Log all incoming headers (This checks for X-XSRF-TOKEN)
-        logger('Headers:', $request->headers->all());
+        $request->session()->invalidate();
 
-        // 2. Log all incoming cookies (This checks for laravel_session)
-        logger('Cookies:', $request->cookies->all());
+        $request->session()->regenerateToken();
 
-        return response()->json(['message' => 'Log captured']);
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ], 200);
     }
     // !SECTION
+
+    public function info(Request $request) {
+        return $request->user();
+    }
 
     // SECTION - get data
     private function getData($request)

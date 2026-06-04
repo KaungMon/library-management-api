@@ -11,12 +11,9 @@ use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 
-/* Route::middleware('auth:sanctum')->prefix('user')->group(function() {
+Route::middleware('auth:sanctum')->prefix('user')->group(function() {
     Route::post('logout', [UserController::class, 'logout']);
-}); */
-
-Route::prefix('user')->group(function() {
-    Route::post('logout', [UserController::class, 'logout']);
+    Route::get('info', [UserController::class, 'info']);
 });
 
 // SECTION - user
