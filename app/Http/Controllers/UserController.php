@@ -4,52 +4,74 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     // SECTION - create
     public function login(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-        if(isset($user)) {
-            if(Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'user' => $user,
-                    'token' => $user->createToken(time())->plainTextToken
-                ], 200);
-            }else {
-                return response()->json([
-                    'user' => null,
-                    'token' => null
-                ], 200);
-            }
-        }else {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
             return response()->json([
-                'user' => null,
-                'token' => null
-            ], 200);
+                "message" => "Login successfully",
+                "user_id" => Auth::user()->id,
+
+            ], 202);
+        } else {
+            return response()->json([
+                "message" => "Invalid email or password."
+            ], 401);
         }
     }
     // !SECTION
 
     // SECTION - register
-    public function signup(Request $request) {
+    public function signup(Request $request)
+    {
+
         $data = $this->getData($request);
         $data["user_role_id"] = 1;
         logger($data);
         User::create($data);
         $user = User::where("email", $data["email"])->first();
         logger($user);
-        return response() ->json([
+        return response()->json([
             "user" => $user,
             "token" => $user->createToken(time())->plainTextToken,
         ]);
     }
     // !SECTION
 
+    // SECTION - logout
+    public function logout(Request $request)
+    {
+        $user_id = $request->user_id;
+        if ($user_id == Auth::user()->id) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json([
+                "message" => "Logout successful"
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Forbidden'
+            ], 403);
+        }
+    }
+    // !SECTION
+
     // SECTION - get data
-    private function getData($request) {
+    private function getData($request)
+    {
         return [
             "first_name" => $request->firstName,
             "surname" => $request->surname,
@@ -61,4 +83,5 @@ class UserController extends Controller
             "password" => Hash::make($request->password),
         ];
     }
+    // !SECTION
 }
