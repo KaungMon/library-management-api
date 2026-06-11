@@ -11,13 +11,14 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     // SECTION - create
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return response()->json([
                 "message" => "Login successfully",
@@ -52,21 +53,21 @@ class UserController extends Controller
     // SECTION - logout
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ], 200);
+        $user_id = $request->user_id;
+        if ($user_id == Auth::user()->id) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json([
+                "message" => "Logout successful"
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Forbidden'
+            ], 403);
+        }
     }
     // !SECTION
-
-    public function info(Request $request) {
-        return $request->user();
-    }
 
     // SECTION - get data
     private function getData($request)
