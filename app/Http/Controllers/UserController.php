@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -69,18 +67,58 @@ class UserController extends Controller
     }
     // !SECTION
 
+    // SECTION - profile
+    public function profile(Request $request)
+    {
+        $id = $request->user()->id;
+        $user = User::with(['role'])->where('id', $id)->first();
+
+        $data = $this->getData($user);
+        return response()->json([
+            "user" => $data,
+        ], 200);
+    }
+    // !SECTION
+
+    // SECTION - edit profile
+    public function edit(Request $request)
+    {
+        $data = $request->only([
+            "email",
+            "username",
+            "first_name",
+            "surname",
+            "gender",
+            "address",
+            "phone"
+        ]);
+
+        Auth::user()->update($data);
+
+        $user = Auth::user();
+        $user_data = $this->getData($user);
+
+        return response()->json([
+            "message" => "Edit Successful!!!",
+            "user" => $user_data,
+        ], 200);
+    }
+    // !SECTION
+
     // SECTION - get data
-    private function getData($request)
+    private function getData($data)
     {
         return [
-            "first_name" => $request->firstName,
-            "surname" => $request->surname,
-            "address" => $request->address,
-            "phone" => $request->phone,
-            "gender" => $request->gender,
-            "email" => $request->email,
-            "username" => $request->username,
-            "password" => Hash::make($request->password),
+            "id" => $data->id,
+            "first_name" => $data->first_name,
+            "surname" => $data->surname,
+            "username" => $data->username,
+            "address" => $data->address,
+            "phone" => $data->phone,
+            "gender" => $data->gender,
+            "email" => $data->email,
+            "role" => $data->role->role_name,
+            "image" => $data->image ? asset('storage/image/' . $data->image) : null,
         ];
     }
     // !SECTION

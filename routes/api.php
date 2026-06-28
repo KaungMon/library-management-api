@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\StatusController;
@@ -14,6 +13,8 @@ use App\Http\Controllers\UserController;
 Route::middleware('auth:sanctum')->prefix('auth')->group(function() {
     Route::group(["prefix" => 'user'], function () {
         Route::post('logout', [UserController::class, 'logout']);
+        Route::get("profile", [UserController::class, 'profile']);
+        Route::post("edit", [UserController::class, 'edit']);
     });
 });
 

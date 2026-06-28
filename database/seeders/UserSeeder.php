@@ -19,8 +19,6 @@ class UserSeeder extends Seeder
                 'username' => 'admin',
                 'first_name' => 'admin',
                 'surname' => 'power',
-                'address' => '1 Wall Street Court',
-                'phone' => '091212122',
                 'gender' => 'M',
                 'user_role_id' => 1,
                 'email' => 'admin@gmail.com',
