@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -93,7 +95,7 @@ class UserController extends Controller
             "phone"
         ]);
 
-        Auth::user()->update($data);
+        User::where('id', Auth::user()->id)->update($data);
 
         $user = Auth::user();
         $user_data = $this->getData($user);
@@ -102,6 +104,30 @@ class UserController extends Controller
             "message" => "Edit Successful!!!",
             "user" => $user_data,
         ], 200);
+    }
+    // !SECTION
+
+    // SECTION - change password
+    public function change_password(Request $request)
+    {
+        $dbPassword = Auth::user()->password;
+        $hashCheck = Hash::check($request->currentPassword, $dbPassword);
+        if ($hashCheck) {
+            $data = [
+                'password' => Hash::make($request->newPassword),
+            ];
+            User::where('id', Auth::user()->id)->update($data);
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json([
+                "message" => "Password Changed!!!"
+            ], 200);
+        } else {
+            return response()->json([
+                "message" => "Password Change Unable!!!"
+            ]);
+        }
     }
     // !SECTION
 

@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function() {
         Route::post('logout', [UserController::class, 'logout']);
         Route::get("profile", [UserController::class, 'profile']);
         Route::post("edit", [UserController::class, 'edit']);
+        Route::post("change_password", [UserController::class, 'change_password']);
     });
 });
 
