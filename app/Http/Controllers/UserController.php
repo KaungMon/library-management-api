@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -70,7 +71,7 @@ class UserController extends Controller
     // !SECTION
 
     // SECTION - profile
-    public function profile(Request $request)
+    public function index(Request $request)
     {
         $id = $request->user()->id;
         $user = User::with(['role'])->where('id', $id)->first();
@@ -107,6 +108,37 @@ class UserController extends Controller
     }
     // !SECTION
 
+    // SECTION - delete account
+    public function delete_account(Request $request)
+    {
+        $request->validate([
+            'username' => ['required']
+        ]);
+        $id = Auth::user()->id;
+        $username = Auth::user()->username;
+        if ($id === 1) {
+            return response()->json([
+                'message' => 'Master admin cannot be deleted'
+            ], 403);
+        } else {
+            if ($username === $request->username) {
+                $user = User::where("id", $id)->first();
+                $user->delete();
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return response()->json([
+                    "message" => "Account deleted successfully."
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => "The username is incorrect."
+                ], 422);
+            }
+        }
+    }
+    // !SECTION
+
     // SECTION - change password
     public function change_password(Request $request)
     {
@@ -128,6 +160,45 @@ class UserController extends Controller
                 "message" => "Password Change Unable!!!"
             ]);
         }
+    }
+    // !SECTION
+
+    // SECTION - update image
+    public function update_image(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|max:2048',
+        ]);
+        $id = Auth::user()->id;
+        $oldImageName = User::where("id", $id)->first()->image;
+        if ($oldImageName != null) {
+            Storage::delete('public/image/' . $oldImageName);
+        }
+        $newImageName = uniqid() . '.' . $request->file('image')->getClientOriginalName();
+        logger($newImageName);
+        $request->file('image')->storeAs('public/image/', $newImageName);
+        $data['image'] = $newImageName;
+        User::where("id", $id)->update($data);
+
+        return response()->json([
+            "message" => "Update Image Successfully!!!"
+        ]);
+    }
+    // !SECTION
+
+    // SECTION - delete image
+    public function delete_image()
+    {
+        $id = Auth::user()->id;
+        $imageName = User::where("id", $id)->first()->image;
+        if ($imageName != null) {
+            Storage::delete('public/image/' . $imageName);
+            $data["image"] = null;
+            User::where("id", $id)->update($data);
+        }
+        return response()->json([
+            "message" => "Delete Image Successfully!!!"
+        ]);
     }
     // !SECTION
 
