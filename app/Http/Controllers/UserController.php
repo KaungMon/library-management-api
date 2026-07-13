@@ -34,23 +34,6 @@ class UserController extends Controller
     }
     // !SECTION
 
-    // SECTION - register
-    public function signup(Request $request)
-    {
-
-        $data = $this->getData($request);
-        $data["user_role_id"] = 1;
-        logger($data);
-        User::create($data);
-        $user = User::where("email", $data["email"])->first();
-        logger($user);
-        return response()->json([
-            "user" => $user,
-            "token" => $user->createToken(time())->plainTextToken,
-        ]);
-    }
-    // !SECTION
-
     // SECTION - logout
     public function logout(Request $request)
     {

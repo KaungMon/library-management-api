@@ -28,7 +28,6 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
 // SECTION - user
 Route::group(['prefix' => 'user'], function () {
     Route::post('login', [UserController::class, 'login']);
-    Route::post('signup', [UserController::class, 'signup']);
 });
 // !SECTION
 
