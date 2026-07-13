@@ -1,5 +1,5 @@
 <?php
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\StatusController;
@@ -11,9 +11,17 @@ use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
 
-Route::middleware('auth:sanctum')->prefix('auth')->group(function() {
+Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
     Route::group(["prefix" => 'user'], function () {
         Route::post('logout', [UserController::class, 'logout']);
+        Route::group(["prefix" => "profile"], function () {
+            Route::get("/", [UserController::class, 'index']);
+            Route::put("/", [UserController::class, 'edit']);
+            Route::delete("/delete-account", [UserController::class, 'delete_account']);
+            Route::post("/update-image", [UserController::class, 'update_image']);
+            Route::delete("/delete-image", [UserController::class, 'delete_image']);
+            Route::post("/change_password", [UserController::class, 'change_password']);
+        });
     });
 });
 

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('first_name');
             $table->string('surname');
-            $table->string('address');
-            $table->string('phone');
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
             $table->string('gender');
             $table->foreignId('user_role_id')->constrained('user_roles');
             $table->string('email')->unique();
